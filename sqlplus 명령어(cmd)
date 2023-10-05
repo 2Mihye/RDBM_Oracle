@@ -1,0 +1,4 @@
+cmd 명령어
+sqlplus 사용자 이름/ 사용자가 설정한 비밀번호
+@@sql이 들어있는 주소(위치)\sql파일이름.sql
+예시) @@C:\Users\user1\Desktop\EMP_EXAMPLE.sql
