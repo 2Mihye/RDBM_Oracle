@@ -1,0 +1,11 @@
+CREATE TABLE "user" (
+user_id NUMBER(5) PRIMARY KEY,
+user_name VARCHAR2(50),
+age NUMBER(5),
+email VARCHAR2(50),
+hire_date DATE,
+salary NUMBER(10,2)
+)
+
+ININSERT INTO "user" (user_id, user_name, age, email, hire_date, salary)
+VALUES (1, 'KH1', 35, 'kh@kh.com', TO_DATE('2023-10-05', 'YYYY-MM-DD'), 5000.00);
