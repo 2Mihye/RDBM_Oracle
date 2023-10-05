@@ -9,3 +9,33 @@ salary NUMBER(10,2)
 
 ININSERT INTO "user" (user_id, user_name, age, email, hire_date, salary)
 VALUES (1, 'KH1', 35, 'kh@kh.com', TO_DATE('2023-10-05', 'YYYY-MM-DD'), 5000.00);
+
+SELECT * FROM "user"
+WHERE age >= 30;
+
+UPDATE "user"
+SET salary = 6000.00
+WHERE user_id = 1;
+
+
+example2)
+CREATE TABLE "user_info" (
+    user_id NUMBER(5) PRIMARY KEY,
+    nickname VARCHAR2 (50),
+    pw VARCHAR2(100)
+);
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (1, 'love', 'lovely');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (2, 'cute', 'cutie');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (3, 'happy', 'happily');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (4, 'grace', 'graceful');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (5, 'beautiful', 'beauty');
