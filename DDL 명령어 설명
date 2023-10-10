@@ -5,6 +5,10 @@ DDL (Data Definition Language)
     명령문이 많이 있으나 대표적인 명령문으로는 생성(CREATE), 수정(ALTER), 삭제(DROP), 주석(COMMENT), 권한 부여(GRANT), 권한 박탈(REVOKE), 자료버림(TRUNCATE)가 있다.
     각 문장은 CREATE ALTER TRUNCATE GRANT REVOKE COMMENT 등으로 시작한다.
 
+ALTER TABLE 테이블이름 MODIFY (변경하고자 하는 열의 이름 문자열유형(수정값 BYTE));
+예제코드 : ALTER TABLE employee MODIFY (JOB VARCHAR2(20BYTE));
+코드설명 : 'EMPLOYEE' 테이블에서 'JOB' 열에 입력된 값이 열의 최대 길이를 초과하여 문제가 발생했을 경우 ALTER와 MODIFY를 작성하여 JOB열의 크기를 20BYTE로 변경할 수 있다.
+
 ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE; // ORACLE DATABASE에서 "_ORACLE_SCRIPT" 모드 활성화
 _ORACLE_SCRIPT : ORACLE DATABASE에서 1X 이상 버전에서 사용할 수 있는 특별한 모드
 
