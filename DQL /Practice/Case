@@ -1,0 +1,58 @@
+-- 직원의 급여가 5000 이상인 경우 "고액"으로 표시하고, 그 외는 "보통"으로 표시
+SELECT ENAME, SALARY,
+    CASE -- 여러 조건을 비교할 수 있고, 조건을 만족하는 경우 다른 결과 반환
+        WHEN salary >= 5000 THEN '고액' -- 급여가 5000 이상인 경우 '고액' 반환
+        ELSE '보통' -- 위 조건에 해당하지 않는 경우 '보통'으로 반환
+    END AS salary_info -- END는 CASE문의 끝을 나타내는 키워드 // AS SALARY_INFO는 새로 생성된 열에 별칭 부여
+FROM employee;
+
+-- 직급에 따라 보너스 계산
+SELECT ename, job, salary,
+    CASE job
+        WHEN 'MANAGER' THEN salary * 0.15
+        WHEN 'Developer' THEN salary * 0.1
+        WHEN 'SALESMAN' THEN salary * 0.05
+        ELSE 0
+    END AS bonus
+FROM EMPLOYEE;
+
+-- 급여 범위 지정 5000 이상 고액 / 3000 이상 중간
+SELECT ename, salary,
+ CASE
+    WHEN salary >= 5000 THEN '고액'
+    WHEN salary >= 3000 THEN '중간'
+    ELSE NULL
+    END AS SALARY_RANGE
+FROM EMPLOYEE;
+
+-- 직원의 입사한 연도에 따른 경력 계산 (활용: WHEN EXTRACT(YEAR FROM HIREDATE) = 2021 THEN '1년 미만' 2022년은 1년으로 표기하기
+SELECT ENAME, HIREDATE,
+CASE
+    WHEN EXTRACT(YEAR FROM HIREDATE) = 2023 THEN '1년 미만'
+    WHEN EXTRACT(YEAR FROM HIREDATE) = 2022 THEN '1년'
+    ELSE '2년 이상'
+    END AS WORKING_PERIOD
+FROM EMPLOYEE;
+
+-- 직원의 급여를 천 단위로 반올림
+SELECT ENAME, SALARY ,ROUND(SALARY) FROM EMPLOYEE;
+
+-- 직원의 급여에 따른 등급 지정
+
+-- 부서별 직원 수 계산 및 부서 유형 지정 (3명일 경우 중규모 5명일 경우 대규모)
+SELECT DNO, COUNT(*),
+CASE
+    WHEN COUNT(*) >= 3 THEN '중규모'
+    WHEN COUNT(*) >= 5 THEN '대규모'
+    ELSE '소규모'
+    END AS SIZE_DNO
+FROM EMPLOYEE GROUP BY DNO;
+
+-- 직원의 입사 월에 따른 경력 계산 (10월 1개월 9월은 2개월 나머지는 3개월 이상)
+SELECT ENAME, HIREDATE,
+CASE
+    WHEN EXTRACT(MONTH FROM HIREDATE) = 10 THEN '1개월'
+    WHEN EXTRACT(MONTH FROM HIREDATE) = 09 THEN '2개월'
+    ELSE '3개월 이상'
+    END AS HIRE_PERIOD
+FROM EMPLOYEE;
