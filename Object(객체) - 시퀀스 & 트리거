@@ -22,7 +22,7 @@ Trigger(트리거) : 데이터베이스에서 발생하는 특정 이벤트에 �
                           BEGIN
                                 SELECT 어떤 값의 ID_seq.NEXTVAL
                                 INTO : NEW.어떤 값의 ID
-                                FROM dual
+                                FROM dual;
                           END;
                  CREATE OR REPLACE TRIGGER : 트리거를 생성 또는 변경하는 명령
                  OR REPLACE : 이미 동일한 이름의 트리거가 있는 경우 덮어쓰기를 허용
