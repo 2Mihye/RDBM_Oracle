@@ -1,0 +1,17 @@
+CREATE TABLE parent_table (
+    parent_id INT PRIMARY KEY);
+    
+CREATE TABLE child_table (
+    child_id INT PRIMARY KEY,
+    parent_id INT,
+    FOREIGN KEY(parent_id) REFERENCES parent_table(parent_id)
+    ON DELETE CASCADE);
+
+-- 부모 테이블에 데이터 추가
+INSERT INTO parent_table(parent_id) VALUES (1);
+-- 자식 테이블에 데이터 추가
+INSERT INTO child_table(child_id, parent_id) VALUES(1, 1);
+INSERT INTO child_table(child_id, parent_id) VALUES(2, 1);
+
+-- 부모 테이블에서 특정 행 삭제
+DELETE FROM parent_table WHERE parent_id = 1;
