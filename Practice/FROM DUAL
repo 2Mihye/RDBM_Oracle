@@ -1,0 +1,30 @@
+-- 테이블이 없으나 함수를 공부하고 싶을 때! FROM DUAL 활용
+SELECT REPLACE ('HELLO, WORLD!', 'HELLO', 'HI') FROM DUAL;
+SELECT 'HELLO' || 'WORLD!' AS textSum FROM DUAL;
+
+
+-- Hello World From Dual 을 이용하여 함수 연습
+-- 문자열을 소문자로 변환하기 LOWER
+SELECT LOWER('HELLO WORLD') AS lower_txt FROM DUAL;
+-- 문자열을 대문자로 변환하기 UPPER
+SELECT UPPER('hello world') AS upper_txt FROM DUAL;
+-- 각 단어의 첫 글자를 대문자로 변환 INICAP
+SELECT INITCAP('hello, world') AS initcap_txt FROM DUAL;
+-- 문자열의 (1~5) 일부분 추출
+SELECT SUBSTR('Hello, World', 1, 4) FROM DUAL;
+-- 양쪽 공백 제거하기 ' Hello, World ' TRIM
+SELECT TRIM(' Hello, World ') FROM DUAL;
+-- 왼쪽 공백 제거하기 ' Hello, World ' LTRIM
+SELECT LTRIM(' Hello, World ') FROM DUAL;
+-- 오른쪽 공백 제거하기 ' Hello, World ' RTRIM
+SELECT RTRIM(' Hello, World ') FROM DUAL;
+-- 문자열에서 World  위치 찾기 INSTR
+SELECT INSTR('Hello, World!', '!') FROM DUAL;
+-- Hello World 문자열 바이트 크기 찾기 LENGTHB
+SELECT LENGTHB('Hello, World!') FROM DUAL;
+-- Hello World 문자열 길이 찾기 LENGTH
+SELECT LENGTH('Hello, World!') FROM DUAL;
+-- 왼쪽에 문자열을 채우기 LPAD
+SELECT LPAD ('5', 4, '0') FROM DUAL;
+-- 오른쪽에 문자열 채우기 RPAD
+SELECT RPAD ('5', 4, '0') FROM DUAL;
