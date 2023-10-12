@@ -107,7 +107,8 @@ OVER(PARTITION BY genre ORDER BY price DESC) rn FROM book b) -- genre열을 기�
 WHERE rn = 1; -- rn : 행 번호 순서. 번호를 나타내는 별칭
 
 -- 각 저자가 쓴 책 수가 2권 이상인 저자 찾기
-SELECT author, title FROM book WHERE COUNT(author) >= 2;
+
 
 -- 각 장르별로 판매된 가장 비싼 책을 가져오기 윈도우 함수 ROW_NUMBER
 SELECT * FROM (SELECT b.*, RANK() OVER(PARTITION BY genre ORDER BY price DESC) rnk FROM book b) WHERE rnk = 1;
+
