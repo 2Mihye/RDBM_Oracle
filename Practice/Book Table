@@ -93,3 +93,21 @@ UPDATE book SET title =
         WHEN title = '몽실언니' THEN '몽실오빠'
         ELSE title
     END;
+
+/***********************************WINDOW 함수 활용**************************************/
+-- 서브쿼리를 활용하여 가장 비싼 책의 정보
+SELECT * FROM book WHERE price = (SELECT MAX(price) FROM book);
+
+-- 윈도우 함수 RANK 활용해서 각 장르별로 가장 비싼 두 번째 책 가져오기 WHERE rnk = 1;
+SELECT * FROM (SELECT b.*, RANK() OVER(PARTITION BY genre ORDER BY price DESC) rnk FROM book b) WHERE rnk = 2;
+
+-- 윈도우 함수 ROW_NUMBER 활용하여 각 장르별로 가장 비싼 책 가져오기
+SELECT * FROM (SELECT b.*, ROW_NUMBER()
+OVER(PARTITION BY genre ORDER BY price DESC) rn FROM book b) -- genre열을 기준으로 데이터를 분할하고 price열을 기준으로 내림차순으로 정렬하여 각 분할된 그룹 내에서 순위 할당
+WHERE rn = 1; -- rn : 행 번호 순서. 번호를 나타내는 별칭
+
+-- 각 저자가 쓴 책 수가 2권 이상인 저자 찾기
+SELECT author, title FROM book WHERE COUNT(author) >= 2;
+
+-- 각 장르별로 판매된 가장 비싼 책을 가져오기 윈도우 함수 ROW_NUMBER
+SELECT * FROM (SELECT b.*, RANK() OVER(PARTITION BY genre ORDER BY price DESC) rnk FROM book b) WHERE rnk = 1;
