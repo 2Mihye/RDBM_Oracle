@@ -21,6 +21,18 @@ INSERT INTO products(product_id, product_name, category, price, stock_quantity)
 VALUES (3, '커피머신', '가전제품', 59.99, 5);
 INSERT INTO products(product_id, product_name, category, price, stock_quantity)
 VALUES (4, '운동화', '신발', 79.99, 30);
+INSERT INTO products(product_id, product_name, category, price, stock_quantity)
+VALUES (5, '후드 집업', '의류', 20.99, 33);
+INSERT INTO products(product_id, product_name, category, price, stock_quantity)
+VALUES (6, '원 피 스', '의류', 10.99, 2); 
 
 -- 제품 이름으로 검색(인덱스 활용)
 SELECT * FROM products WHERE product_name = '노트북';
+-- 주문 ID 주문 검색 (인덱스 활용하여 주문 검색)
+SELECT * FROM orders WHERE order_id = 7;
+-- cafe_id가 6인 카페에서 주문 검색
+SELECT * FROM orders WHERE cafe_id = 6;
+-- 가격이 10.00~15.00 가격 범위로 주문 검색
+SELECT * FROM orders WHERE total_price BETWEEN 10.00 AND 15.00;
+-- 2023-10-11 14:00:00 ~ 2023-10-11 15:00:00 범위로 주문 검색(인덱스 활용)
+SELECT * FROM orders WHERE order_date BETWEEN TO_TIMESTAMP('2023-10-11 14:00:00') AND ('2023-10-11 15:00:00');
