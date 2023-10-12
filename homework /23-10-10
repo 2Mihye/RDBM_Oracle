@@ -15140,36 +15140,3 @@ ALTER TABLE TB_GRADE ENABLE CONSTRAINT FK_GRADE_02;
 set feedback on
 set define on
 prompt 데이터 입력을 완료했습니다.
-
-
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
--- 1. 학과명과 계열 출력
-SELECT department_name, category FROM tb_department;
-
--- 2. 학과의 학과 정원을 ~학과의 정원은 ~명 입니다.로 출력
-SELECT department_name || '의 정원은 ' || capacity || '명 입니다.' FROM tb_department;
-
--- 3. 국어국문학과에 다니는 현재 휴학중인 여학생
-SELECT * FROM tb_student WHERE department_no = 001 AND absence_yn = 'Y' AND student_ssn LIKE '%-2%';
-
--- 4. 서관 장기 연체자 학번이 'A513079', 'A513090', 'A513091', 'A513110', 'A513119'일 때 대상자를 찾는 구문
-SELECT student_name FROM tb_student WHERE student_no IN ('A513079', 'A513090', 'A513091', 'A513110', 'A513119');
-
--- 5. 입학 정원이 20명 이상 30명 이하인 학과들의 학과명과 계열 출력
-SELECT department_name, category FROM tb_department WHERE capacity BETWEEN 20 AND 30;
-
--- 6. 소속 학과를 가지고 있지 않은 총장의 이름 출력
-SELECT professor_name FROM tb_professor WHERE department_no is null;
-
--- 7. 학과가 지정되지 않은 학생 출력
-SELECT student_name FROM tb_student WHERE department_no is null;
-
--- 8. 선수과목이 존재하는 과목 번호 출력
-SELECT class_no FROM tb_class WHERE preattending_class_no IS NOT NULL;
-
--- 9. 계열 출력
-SELECT DISTINCT category FROM tb_department;
-
--- 10. 02학번 전주 거주자들 중 휴학한 사람은 제외하고 학번, 이름, 주민번호를 출력
-SELECT student_no, student_name, student_ssn FROM tb_student WHERE student_address LIKE '%전주%' AND absence_yn = 'N' AND EXTRACT(YEAR FROM entrance_date) = '2002';
