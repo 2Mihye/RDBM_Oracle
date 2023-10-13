@@ -1,0 +1,184 @@
+-- 1. 학생 이름과 주소를 '학생 이름', '주소지'로 이름의 오름차순으로 출력
+SELECT student_name "학생 이름", student_address 주소지 FROM tb_student ORDER BY student_name;
+
+-- 2. 휴학중인 학생들의 이름과 주민번호를 나이가 적은 순으로 출력
+SELECT student_name, student_ssn FROM tb_student WHERE absence_yn = 'Y' ORDER BY student_ssn DESC;
+--선생님답:
+SELECT STUDENT_NAME, STUDENT_SSN FROM TB_STUDENT WHERE ABSENCE_YN = 'Y' ORDER BY SUBSTR(STUDENT_SSN, 1, 6) DESC;
+
+-- 3. 주소지가 강원도나 경기도인 학생들 중 1900년대 학번을 가진 학생들의 이름, 학번, 주소를 이름의 오름차순으로 '학생이름', '학번', '거주지 주소'로 출력
+SELECT student_name 학생이름, student_no 학번, student_address "거주지 주소" FROM tb_student WHERE student_no NOT LIKE 'A%' AND (student_address LIKE '강원도%'
+OR student_address LIKE '경기도%') ORDER BY student_name;
+
+-- 4. 법학과 교수 중 가장 나이가 많은 사람부터 이름과 주민번호 출력
+SELECT professor_name, professor_ssn FROM tb_professor WHERE department_no = 005 ORDER BY professor_ssn;
+--선생님 답:
+SELECT PROFESSOR_NAME, PROFESSOR_SSN FROM TB_PROFESSOR WHERE DEPARTMENT_NO = (SELECT DEPARTMENT_NO FROM TB_DEPARTMENT WHERE DEPARTMENT_NAME = '법학과') ORDER BY 2;
+
+-- 5. 2004년 2학기에 'C3118100'과목을 수강한 학생들의 학번과 학점을 학점이 높은 순으로 출력하되 학점이 같으면 학번이 낮은 학생부터 나오도록 출력
+SELECT student_no, point FROM tb_grade WHERE tb_grade.class_no = 'C3118100' ORDER BY point DESC, tb_grade.student_no;
+--선생님 답:
+SELECT STUDENT_NO, TO_CHAR(POINT, 9.99) POINT FROM TB_GRADE WHERE TERM_NO = '200402' AND CLASS_NO = 'C3118100' ORDER BY POINT DESC, STUDENT_NO;
+
+-- 6. 학번, 이름, 학과이름을 학생 이름 오름차순으로 출력
+SELECT s.student_no, s.student_name, d.department_name FROM tb_student s JOIN tb_department d ON s.department_no = d.department_no ORDER BY s.student_name;
+-- 선생님 답:
+SELECT STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME FROM TB_STUDENT JOIN TB_DEPARTMENT USING(DEPARTMENT_NO) ORDER BY 2;
+
+-- 7. 과목이름과 과목의 학과 이름 출력
+SELECT c.class_name, d.department_name FROM tb_class c JOIN tb_department d ON c.department_no = d.department_no ORDER BY d.department_name;
+--선생님 답:
+SELECT CLASS_NAME, DEPARTMENT_NAME FROM TB_CLASS JOIN TB_DEPARTMENT USING(DEPARTMENT_NO);
+
+-- 8. 과목별 교수 이름 출력
+SELECT c.class_name, p.professor_name FROM tb_class c 
+JOIN tb_class_professor n ON n.class_no = c.class_no
+JOIN tb_professor p ON p.professor_no = n.professor_no;
+--선생님 답:
+SELECT CLASS_NAME, PROFESSOR_NAME FROM TB_CLASS
+JOIN TB_CLASS_PROFESSOR USING(CLASS_NO)
+JOIN TB_PROFESSOR USING(PROFESSOR_NO);
+
+-- 9. 8번의 결과 중 '인문사회'계열에 속한 과목과 담당 교수 이름 출력
+SELECT c.class_name, p.professor_name FROM tb_class c 
+JOIN tb_class_professor n ON n.class_no = c.class_no
+JOIN tb_professor p ON p.professor_no = n.professor_no
+WHERE p.department_no between 1 AND 21;
+-- 선생님 답:
+SELECT CLASS_NAME, PROFESSOR_NAME FROM TB_CLASS
+JOIN TB_CLASS_PROFESSOR USING(CLASS_NO)
+JOIN TB_PROFESSOR P USING(PROFESSOR_NO)
+JOIN TB_DEPARTMENT D ON(P.DEPARTMENT_NO = D.DEPARTMENT_NO)
+WHERE CATEGORY = '인문사회';
+
+-- 10. '음악학과' 학생들의 '학번', '학생 이름', '전체 평점'을 소수점 1자리까지만 반올림하여 출력
+SELECT s.student_no 학번, s.student_name "학생 이름", ROUND(AVG(g.point),1) "전체 평점" FROM tb_student s JOIN tb_grade g ON s.student_no = g.student_no WHERE s.department_no = 059
+GROUP BY s.student_no, s.student_name;
+--선생님 답:
+SELECT G.STUDENT_NO 학번, STUDENT_NAME "학생 이름", ROUND(AVG(POINT), 1) "전체 평점" FROM TB_GRADE G
+JOIN TB_STUDENT S ON(G.STUDENT_NO = S.STUDENT_NO)
+JOIN TB_DEPARTMENT D ON(S.DEPARTMENT_NO = D.DEPARTMENT_NO) WHERE DEPARTMENT_NAME = '음악학과'
+GROUP BY G.STUDENT_NO, STUDENT_NAME ORDER BY 1;
+
+-- 11. 학번이 'A313047'인 학생의 '학과 이름', '학생 이름', '지도 교수 이름'으로 출력
+-- SELECT student_no, student_name FROM tb_student WHERE student_no = 'A313047'; --손건영
+SELECT d.department_name "학과 이름", s.student_name "학생 이름", p.professor_name "지도 교수 이름" FROM tb_student s
+JOIN tb_department d ON d.department_no = s.department_no
+JOIN tb_professor p ON p.professor_no = s.coach_professor_no
+WHERE s.student_no = 'A313047';
+--선생님 답:
+SELECT DEPARTMENT_NAME, STUDENT_NAME, PROFESSOR_NAME FROM TB_STUDENT
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+JOIN TB_PROFESSOR ON(PROFESSOR_NO = COACH_PROFESSOR_NO)
+WHERE STUDENT_NO = 'A313047';
+
+-- 12. 2007년도 '인간관계론'을 수강한 학생들의 이름과 수강학기 출력 -- C2604100
+SELECT s.student_name, g.term_no FROM tb_student s
+JOIN tb_grade g ON s.student_no = g.student_no
+WHERE g.class_no = 'C2604100' AND g.term_no LIKE '2007%';
+-- 선생님 답:
+SELECT STUDENT_NAME, TERM_NO TERM_NAME FROM TB_STUDENT
+JOIN TB_GRADE USING(STUDENT_NO)
+JOIN TB_CLASS USING(CLASS_NO)
+WHERE TERM_NO LIKE '2007%' AND CLASS_NAME = '인간관계론';
+
+-- 13. 예체능 과목 중 과목 담당 교수를 한 명도 배정받지 못한 과목의 이름과 학과 이름 출력 056~063
+SELECT c.class_name, d.department_name FROM tb_class c
+JOIN tb_department d ON d.department_no = c.department_no
+WHERE d.department_no BETWEEN 053 AND 063;
+-- 선생님 답:
+SELECT CLASS_NAME, DEPARTMENT_NAME FROM TB_CLASS
+LEFT JOIN TB_CLASS_PROFESSOR USING(CLASS_NO)
+LEFT JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+WHERE CATEGORY = '예체능' AND PROFESSOR_NO IS NULL;
+
+-- 14. 서반아어학과 학생들의 "학생이름"과 "지도교수" 출력. 단, 지도교수가 없는 학생일 경우 '지도교수 미지정'으로 출력
+--SELECT s.student_name "학생 이름", p.professor_name "지도 교수" FROM tb_student s
+--JOIN tb_professor p ON p.professor_no = REPLACE(s.coach_professor_no, null, '지도교수 미지정')
+--WHERE s.department_no = 020;
+-- 선생님 답:
+SELECT STUDENT_NAME 학생이름, NVL(PROFESSOR_NAME, '지도교수 미지정') 지도교수 FROM TB_STUDENT S
+LEFT JOIN TB_PROFESSOR ON(PROFESSOR_NO = COACH_PROFESSOR_NO)
+JOIN TB_DEPARTMENT D ON(S.DEPARTMENT_NO = D.DEPARTMENT_NO)
+WHERE DEPARTMENT_NAME = '서반아어학과' ORDER BY STUDENT_NO;
+
+-- 15. 휴학생이 아닌 학생 중 평점이 4.0 이상인 학생을 찾아서 학번, 이름, 학과이름, 평점 출력
+--SELECT s.student_no, s.student_name, d.department_name, AVG(g.point) as avg_grade FROM tb_grade g
+--JOIN tb_department d ON d.department_no = g.department_no
+--JOIN tb_student s ON s.student_no = g.student_no
+--WHERE avg_grade >= 4.0;
+-- 선생님 답:
+SELECT STUDENT_NO 학번, STUDENT_NAME 이름, DEPARTMENT_NAME "학과 이름", AVG(POINT) 평점 FROM TB_STUDENT
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+JOIN TB_GRADE USING(STUDENT_NO)
+WHERE ABSENCE_YN = 'N' GROUP BY STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME HAVING AVG(POINT) >= 4.0 ORDER BY 1;
+
+-- 16. 환경조경학과 전공과목들의 과목 별 평점 출력
+-- 선생님 답:
+SELECT CLASS_NO, CLASS_NAME, AVG(POINT) FROM TB_CLASS
+JOIN TB_GRADE USING(CLASS_NO)
+JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+WHERE DEPARTMENT_NAME = '환경조경학과' AND CLASS_TYPE LIKE '전공%' GROUP BY CLASS_NO, CLASS_NAME ORDER BY 1;
+
+
+-- 17. 최경희 학생과 같은 과 학생들의 이름과 주소 출력 --038
+--SELECT * FROM tb_student WHERE student_name = '최경희'; -- 038
+SELECT student_name, student_address FROM tb_student WHERE department_no = 038;
+-- 선생님 답:
+SELECT STUDENT_NAME, STUDENT_ADDRESS FROM TB_STUDENT WHERE DEPARTMENT_NO = (SELECT DEPARTMENT_NO FROM TB_STUDENT WHERE STUDENT_NAME = '최경희');
+
+-- 18. 국어국문학과에서 총 평점이 가장 높은 학생의 이름과 학번 출력
+--SELECT s.student_name, g.student_no FROM tb_grade g
+--JOIN tb_student s ON s.student_no = g.student_no
+--WHERE (SELECT sum(g.point) FROM tb_grade g;
+-- 선생님 답: 
+SELECT STUDENT_NO, STUDENT_NAME
+FROM (SELECT STUDENT_NO, STUDENT_NAME, AVG(POINT)
+      FROM TB_GRADE
+           JOIN TB_STUDENT USING(STUDENT_NO)
+      WHERE DEPARTMENT_NO = (SELECT DEPARTMENT_NO
+                             FROM TB_DEPARTMENT
+                             WHERE DEPARTMENT_NAME = '국어국문학과')
+      GROUP BY STUDENT_NO, STUDENT_NAME
+      ORDER BY AVG(POINT) DESC)
+WHERE ROWNUM = 1;
+
+SELECT STUDENT_NO, STUDENT_NAME
+FROM TB_STUDENT
+     JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+     JOIN TB_GRADE USING(STUDENT_NO)
+WHERE DEPARTMENT_NAME = '국어국문학과'
+GROUP BY STUDENT_NO, STUDENT_NAME
+HAVING AVG(POINT) = (SELECT MAX(AVG(POINT))
+                     FROM TB_GRADE
+                     WHERE STUDENT_NO IN (SELECT STUDENT_NO
+                                         FROM TB_STUDENT
+                                         WHERE DEPARTMENT_NO = (SELECT DEPARTMENT_NO
+                                                                FROM TB_DEPARTMENT
+                                                                WHERE DEPARTMENT_NAME = '국어국문학과'))
+                     GROUP BY STUDENT_NO);
+
+SELECT STUDENT_NO, STUDENT_NAME
+FROM TB_STUDENT
+     JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+     JOIN TB_GRADE USING(STUDENT_NO)
+WHERE DEPARTMENT_NAME = '국어국문학과'
+GROUP BY STUDENT_NO, STUDENT_NAME
+HAVING AVG(POINT) = (SELECT MAX(AVG(POINT))
+                     FROM TB_GRADE
+                          JOIN TB_STUDENT USING(STUDENT_NO)
+                          JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
+                     WHERE DEPARTMENT_NAME = '국어국문학과'
+                     GROUP BY STUDENT_NO);
+
+-- 19. 환경조경학과와 같은 계열 학과들의 전공과목 평점파악. "계열 학과명", "전공평점"으로 소수점 한 자리까지 반올림하여 출력.
+-- 선생님 답: (코멘트)반올림 결과 값이 문제와는 다름, 문제 결과는 버림을 한 것 같음
+SELECT DEPARTMENT_NAME "계열 학과명", ROUND(AVG(POINT), 1)
+FROM TB_DEPARTMENT
+     JOIN TB_STUDENT USING(DEPARTMENT_NO)
+     JOIN TB_GRADE USING(STUDENT_NO)
+WHERE CATEGORY = (SELECT CATEGORY
+                  FROM TB_DEPARTMENT
+                  WHERE DEPARTMENT_NAME = '환경조경학과')
+GROUP BY DEPARTMENT_NAME
+ORDER BY 1;
