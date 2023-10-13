@@ -112,3 +112,29 @@ SELECT author, COUNT(*) as book_count FROM book GROUP BY author HAVING COUNT(*) 
 -- 각 장르별로 판매된 가장 비싼 책을 가져오기 윈도우 함수 ROW_NUMBER
 SELECT * FROM (SELECT b.*, RANK() OVER(PARTITION BY genre ORDER BY price DESC) rnk FROM book b) WHERE rnk = 1;
 
+/***********************************TRIGGER******************************************/
+-- 1. 테이블 생성
+CREATE TABLE book_log (
+    log_id NUMBER PRIMARY KEY,
+    action_type VARCHAR2(10),
+    book_id NUMBER,
+    log_date TIMESTAMP
+);
+
+-- 2. 시퀀스 생성
+CREATE SEQUENCE book_log_seq START WITH 1 INCREMENT BY 1;
+
+-- 3. 트리거 생성: 책이 INSERT 될 때마다 로그 테이블에 로그를 추가
+CREATE OR REPLACE TRIGGER book_insert_trigger
+AFTER INSERT ON book
+FOR EACH ROW
+BEGIN
+    INSERT INTO book_log (log_id, action_type, book_id, log_date)
+    VALUES (book_log_seq.NEXTVAL, 'INSERT', :NEW.book_id, SYSTIMESTAMP);
+    DBMS_OUTPUT.PUT_LINE('책이 추가되었습니다. 책 ID : ' || :NEW.book_id); -- Java에서 system.out.println 같은 녀석
+END;
+/
+-- 4. INSERT 문을 실행
+INSERT INTO book (book_id, title, author, publication_year, isbn, genre, description, price, publication_date, is_available)
+VALUES (22, '새로운 책', '새로운 저자', 2023, '978-1234567890', 'Fiction', '새로운 책 설명', 9.99, TO_DATE('2023-10-13', 'YYYY-MM-DD'), 'Y');
+
