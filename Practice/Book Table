@@ -134,7 +134,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('책이 추가되었습니다. 책 ID : ' || :NEW.book_id); -- Java에서 system.out.println 같은 녀석
 END;
 /
--- 4. INSERT 문을 실행
+-- 4. INSERT 문을 실행해서 Log 찍기
 INSERT INTO book (book_id, title, author, publication_year, isbn, genre, description, price, publication_date, is_available)
 VALUES (22, '새로운 책', '새로운 저자', 2023, '978-1234567890', 'Fiction', '새로운 책 설명', 9.99, TO_DATE('2023-10-13', 'YYYY-MM-DD'), 'Y');
 
