@@ -50,3 +50,46 @@ CREATE ANY TABLE 권한 부여 : 사용자가 데이터베이스 내에서 어�
 CONNECT : 사용자가 데이터베이스에 연결하는데 필요한 권한
 RESOURCE : 사용자가 테이블, 시퀀스 등의 리소스를 생성할 수 있는 권한 부여
 DBA : 데이터베이스 관리자 권한으로 , 사용자에게 거의 모든 데이터베이스 작업을 수행할 수 있는 권한을 부여한다. 그러므로 보안상 주의해서 부여해야한다.
+
+
+------------------------------------명령어-------------------------------------
+CREATE TABLE "user" (
+user_id NUMBER(5) PRIMARY KEY,
+user_name VARCHAR2(50),
+age NUMBER(5),
+email VARCHAR2(50),
+hire_date DATE,
+salary NUMBER(10,2)
+);
+
+INSERT INTO "user" (user_id, user_name, age, email, hire_date, salary)
+VALUES (1, 'KH1', 35, 'kh@kh.com', TO_DATE('2023-10-05', 'YYYY-MM-DD'), 5000.00);
+
+SELECT * FROM "user"
+WHERE age >= 30;
+
+UPDATE "user"
+SET salary = 6000.00
+WHERE user_id = 1;
+
+example2)
+CREATE TABLE "user_info" (
+    user_id NUMBER(5) PRIMARY KEY,
+    nickname VARCHAR2 (50),
+    pw VARCHAR2(100)
+);
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (1, 'love', 'lovely');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (2, 'cute', 'cutie');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (3, 'happy', 'happily');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (4, 'grace', 'graceful');
+
+INSERT INTO "user_info" (user_id, nickname, pw)
+VALUES (5, 'beautiful', 'beauty');
