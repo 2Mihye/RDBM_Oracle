@@ -1,0 +1,65 @@
+-- SQL DDL
+
+-- 1. 계열 정보 저장할 카테고리 테이블 생성
+CREATE TABLE tb_category (
+    name VARCHAR2(10),
+    use_yn CHAR(1));
+
+-- 2. 과목 구분 저장할 테이블 생성
+CREATE TABLE tb_class_type (
+    no VARCHAR(5) PRIMARY KEY,
+    name VARCHAR(10));
+   
+-- 3. tb_category 테이블의 NAME 칼럼에 PRIMARY KEY 생성 
+--ALTER TABLE tb_category MODIFY name CONSTRAINT name PRIMARY KEY;
+
+
+-- 4. tb_class_type 테이블의 name 칼럼에 Null 값이 들어가지 않도록 속성 변경
+ALTER TABLE tb_class_type MODIFY name CONSTRAINT name NOT NULL;
+
+-- 5. 두 테이블에서 컬럼 명이 NO인 것은 기존 타입을 유지하면서 크기는 10으로, 컬럼명이 name인 것은 마찬가지로 기존 타입을 유지하면서
+--    크기를 20으로 변경
+ALTER table tb_class_type MODIFY ;
+
+-- 6. 두 테이블의 no 컬럼과 name 컬럼의 이름을 각각 tb_를 제외한 테이블 이름이 앞에 붙은 형태로 변경
+-- ALTER TABLE
+
+-- 7. tb_cagegory 테이블과 tb_class_type 테이블의 primary key 이름을 다음과 같이 변경
+--      pk_ + 칼럼이름 ex) pk_category_name
+
+-- 8. 다음과 같은 insert 문을 수행
+ALTER TABLE tb_category MODIFY name VARCHAR2(25);
+
+INSERT INTO tb_category (name, use_yn) VALUES('공학', 'Y');
+INSERT INTO tb_category (name, use_yn) VALUES('자연과학', 'Y');
+INSERT INTO tb_category (name, use_yn) VALUES('의학', 'Y');
+INSERT INTO tb_category (name, use_yn) VALUES('예체능', 'Y');
+INSERT INTO tb_category (name, use_yn) VALUES('인문사회', 'Y');
+COMMIT;
+
+-- 9. tb_department의 category 컬럼이 tb_category 테이블의 category_name 칼럼을 부모 값으로 참조하도록 foreign key 지정
+-- key 이름은 fk_테이블이름_컬럼이름으로 지정 (ex. fk_department_category)
+
+-- 10. 기술대학 학생들의 정보만 있는 학생일반 정보 view 생성
+-- 뷰 이름 : VW_학생일반정보 / 컬럼 : 학번, 학생이름, 주소
+CREATE OR REPLACE VIEW vw_학생일반정보 AS SELECT student_no, student_name, student_address FROM tb_student;
+
+-- 11. 학생이름, 학과이름, 담당교수이름으로 구성되는 view 생성. 지도 교수가 없는 학생이 있을 수 있음을 고려할 것
+-- view는 단순 select 만을 할 경우 학과별로 정렬되어 화면에 보여지게 만들 것
+CREATE OR REPLACE VIEW VW_지도면담 AS SELECT s.student_name, d.department_name, p.professor_name FROM tb_student s 
+JOIN tb_department d ON (d.department_no = s.department_no)
+JOIN tb_professor p ON (p.professor_no = s.coach_professor_no);
+
+-- 12. 모든 학과의 학과별 학생 수를 확인할 수 있도록 적절한 VIEW를 작성해 보자.
+-- 뷰 이름 : VW_학과별학생수 / 컬럼 : department_name, student_count
+CREATE OR REPLACE VIEW VW_학과별학생수 AS SELECT d.department_name, COUNT(s.student_no) AS student_count
+FROM tb_student s JOIN tb_department d ON (d.department_no = s.department_no) GROUP BY d.department_name;
+
+-- 13. 위에서 생성한 학생일반정보 view를 통해 학번이 A213046학생의 이름을 본인 이름(이미혜)으로 변경
+UPDATE VW_학생일반정보 SET student_name = '이미혜' WHERE student_no = 'A213046';
+
+-- 14. 13번에서 같이 view를 통해서 데이터가 변경될 수 있는 상황을 막으려면 view를 어떻게 생성해야 하는지 작성
+CREATE VIEW VW_읽기전용학생정보 AS SELECT student_no, student_name, student_address FROM tb_student WITH READ ONLY;
+
+-- 15. 최근 3년을 기준으로 수강인원이 가장 많았던 3 과목을 찾는 구문을 작성
+CREATE OR REPLACE VIEW VW_CLASS AS SELECT d.department_name, s.student_no, c.class_no, c.term_no
